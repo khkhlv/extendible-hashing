@@ -13,12 +13,21 @@ public class ExtendableHashTable<K, V> implements IHashTable<K, V>, Serializable
     }
 
     public ExtendableHashTable(){
-        this(8);
+        this(512);
+    }
+
+    public Directory getDirectory() {
+        return directory;
     }
 
     @Override
     public void put(K key, V value) {
         Data data = new Data(key.hashCode(), value);
+        directory.insert(data);
+    }
+
+    @Override
+    public void put(Data data) {
         directory.insert(data);
     }
 
@@ -29,7 +38,23 @@ public class ExtendableHashTable<K, V> implements IHashTable<K, V>, Serializable
     }
 
     @Override
-    public void remove(K key) {
-        directory.remove(key.hashCode());
+    public Object get(Data data) {
+        return data.data();
+    }
+
+    @Override
+    public void remove(Data data) {
+        directory.remove(data);
+    }
+
+    @Override
+    public Boolean search(K key) {
+        Data data = directory.getData(key.hashCode());
+        return directory.search(data);
+    }
+
+    @Override
+    public Boolean search(Data data) {
+        return directory.search(data);
     }
 }

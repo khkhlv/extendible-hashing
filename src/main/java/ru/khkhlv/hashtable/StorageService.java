@@ -13,20 +13,9 @@ import ru.khkhlv.utils.Utils;
 import org.apache.commons.io.*;
 
 public class StorageService {
+    // Используем one-nio для сериализации и десериализации
 
-    private int globalDepth = 8;
-    private int bucketSize;
-
-    public StorageService() {
-
-    }
-
-    public StorageService(int globalDepth, int bucketSize, Map<Integer, String> dirsToLinks) {
-        this.globalDepth = globalDepth;
-        this.bucketSize = bucketSize;
-    }
-
-    public void writeToFile(Data data, String fileName) throws IOException, ClassNotFoundException {
+    public void writeToFile(Directory data, String fileName) {
         int bufferSize = Integer.parseInt(Utils.getAppProperties().getProperty("BUCKET_SIZE"));
         try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(fileName), bufferSize);
              PersistStream out = new PersistStream(bufferSize)) {

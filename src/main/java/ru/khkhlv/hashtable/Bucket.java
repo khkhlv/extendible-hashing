@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class Bucket {
+public class Bucket {
     private int localDepth;
     private final int maxBucketSize = Integer.parseInt(Utils.getAppProperties().getProperty("BUCKET_SIZE"));
     private final List<Data> bucketData = new ArrayList<>();

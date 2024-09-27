@@ -9,12 +9,12 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-class Directory implements Serializable{
+public class Directory implements Serializable{
 
     private static final Logger log = LoggerFactory.getLogger(Directory.class);
     public List<Integer> listDirectoriesNumber;
     public List<Bucket> buckets;
-    public int globalDepth = 4;
+    public int globalDepth = 1;
     private static int maxBytesBucketSize;
 
     public Directory(int capacity) {
@@ -28,22 +28,29 @@ class Directory implements Serializable{
     }
 
     public Data getData(int key) {
-        int directoryId = Integer.parseInt(Utils.getBinaryStr(key, globalDepth), 2);
-        int bucketIndex = listDirectoriesNumber.get(directoryId);
+        String directoryIdBinary = Utils.getBinaryStr(key, globalDepth);
+        int directoryKey = Integer.parseInt(directoryIdBinary, 2);
+        //get bucket from directory
+        int bucketIndex = listDirectoriesNumber.get(directoryKey);
         Bucket bucket = buckets.get(bucketIndex);
-        return bucket.getBucketData().get(key);
+        Data data = null;
+        for(int i = 0; i < bucket.getBucketData().size(); i++) {
+            if (bucket.getBucketData().get(i).id() == key) {
+               data = bucket.getBucketData().get(i);
+               break;
+            }
+        }
+        return data;
     }
 
     public void insert(Data data) {
         if (keyExists(data)) {
-            // не разрешаем вставлять запись с ключом, который уже есть
             System.out.println("Key [" + data.id() + "] is already present and cannot be added.");
             return;
         }
         String directoryIdBinary = Utils.getBinaryStr(data.id(), globalDepth);
         int directoryKey = Integer.parseInt(directoryIdBinary, 2);
-        //get bucket from directory
-        int bucketIndex = listDirectoriesNumber.get(directoryKey);
+        int bucketIndex = listDirectoriesNumber.get(directoryKey); // get bucket from directory
         Bucket bucket = buckets.get(bucketIndex);
         if (bucket.insert(data) == -1) {
             splitBucket(directoryKey, data);
@@ -107,11 +114,9 @@ class Directory implements Serializable{
         }
     }
 
-    public void remove(int key) {
-        var data = getData(key);
+    public void remove(Data data) {
         String directoryIdBinary = Utils.getBinaryStr(data.id(), globalDepth);
         int directoryKey = Integer.parseInt(directoryIdBinary, 2);
-        //get bucket from directory
         int bucketIndex = listDirectoriesNumber.get(directoryKey);
         Bucket bucket = buckets.get(bucketIndex);
 
