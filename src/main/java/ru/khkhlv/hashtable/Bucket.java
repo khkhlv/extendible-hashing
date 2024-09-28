@@ -5,10 +5,11 @@ import ru.khkhlv.data.Data;
 import ru.khkhlv.utils.Utils;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bucket {
+public class Bucket implements Serializable {
     private int localDepth;
     private final int maxBucketSize = Integer.parseInt(Utils.getAppProperties().getProperty("BUCKET_SIZE"));
     private final List<Data> bucketData = new ArrayList<>();

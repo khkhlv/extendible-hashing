@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
 @Fork(value = 2, jvmArgs = {"-Xms2G", "-Xmx2G"})
-@Warmup(iterations = 3 ,time = 100, timeUnit = TimeUnit.MILLISECONDS)
+@Warmup(iterations = 3, time = 100, timeUnit = TimeUnit.MILLISECONDS)
 public class BenchmarkHashing {
     @Param({"10", "100", "1000"})
     private int N;
@@ -34,10 +34,10 @@ public class BenchmarkHashing {
 
     private static final Logger log = LoggerFactory.getLogger(BenchmarkHashing.class);
 
-    private  String  tempStr = "tempValue";
+    private String tempStr = "tempValue";
     private final HashMap<String, Object> hashMap = new HashMap<>();
 
-    public static void main(String[]args) throws RunnerException {
+    public static void main(String[] args) throws RunnerException {
 
         Options opt = new OptionsBuilder()
                 .include(BenchmarkHashing.class.getSimpleName())
@@ -54,6 +54,10 @@ public class BenchmarkHashing {
         extendableHashTable = new ExtendableHashTable<>(bucketBSize);
         hashMap.put("key1", "value1");
         hashMap.put("key2", "value2");
+        for (int i = 0; i < N; i++) {
+            String endStr = "_" + (i + 1);
+            extendableHashTable.put(new Data(i + 1, tempStr + endStr));
+        }
     }
 
     @TearDown(Level.Iteration)
